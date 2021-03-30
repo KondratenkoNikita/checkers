@@ -1,3 +1,7 @@
+button {
+  background-color: transparent;
+  outline: none;
+}
 .wrapper {
   background-color: #F8F9FB;
   height: 100vh;
@@ -22,8 +26,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
+  box-sizing: border-box;
+  padding: 2px;
 }
-.cell:focus,.cell:hover {
+.cell:hover, .cell:focus {
   border: 2px solid #151516;
   box-sizing: border-box;
 }
@@ -38,6 +45,7 @@
   border-radius: 50%;
   height: 28px;
   width: 28px;
+  border: none;
 }
 .checkerWhite {
   background-color: #F8F9FB;
@@ -45,7 +53,23 @@
 .checkerBlack {
   background-color: #151516;
 }
-
+.rowTest {
+  display: flex;
+  position: absolute;
+  top: 24%;
+  left: 27%;
+  width: 320px;
+  justify-content: space-around;
+}
+.columnTest {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 28%;
+  left: 25%;
+  height: 320px;
+  justify-content: space-around;
+}
 
 @keyframes App-logo-spin {
   from {

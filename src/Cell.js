@@ -6,7 +6,7 @@ function Cell({
   cell,
   handlerStep,
 }) {
-  const { id, cellColor, checkerColor, row, column } = cell;
+  const { id, cellColor, checkerColor, row, column, isKing } = cell;
   const ref = useRef({ id })
 
   return (
@@ -19,7 +19,7 @@ function Cell({
         { 'cellWhite': cellColor === 'white' },
         { 'cellBlack': cellColor === 'black' },
       )}
-      onClick={() => handlerStep(id, checkerColor, cellColor, row, column)}
+      onClick={() => handlerStep(id, checkerColor, cellColor, row, column, isKing)}
     >
       <span className={cn(
         'checker',

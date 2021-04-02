@@ -3,7 +3,7 @@ import cn from 'classnames';
 import './App.css';
 
 function Cell({
-  cell,
+  cell = {},
   handlerStep,
 }) {
   const { id, cellColor, checkerColor, row, column, isKing } = cell;
@@ -25,6 +25,7 @@ function Cell({
         'checker',
         { 'checkerWhite': checkerColor === 'white' },
         { 'checkerBlack': checkerColor === 'black' },
+        { 'king': isKing },
       )} />
     </button>
   );

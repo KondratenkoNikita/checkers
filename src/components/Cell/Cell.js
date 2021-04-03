@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import cn from 'classnames';
-import './App.css';
-import checkerBlack from "./images/checkerBlack.png";
-import checkerBlackKing from "./images/checkerBlackKing.png";
-import checkerRed from "./images/checherRed.png";
-import checkerRedKing from "./images/checkerRedKing.png";
+import './cell.css';
+import checkerBlack from "../../images/checkerBlack.png";
+import checkerBlackKing from "../../images/checkerBlackKing.png";
+import checkerRed from "../../images/checherRed.png";
+import checkerRedKing from "../../images/checkerRedKing.png";
 
 function Cell({
   cell = {},

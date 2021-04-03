@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Cell from './Cell';
-import './App.css';
+import Cell from '../Cell/Cell';
+import './board.css';
 
 export const ACTIVE_CELL_INIT = {
   fromId: null,

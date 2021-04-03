@@ -5,58 +5,6 @@ button {
   background-color: transparent;
   outline: none;
 }
-.wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #F8F9FB;
-  box-shadow: 0px 0px 20px 4px rgba(0, 0, 0, 0.2);
-}
-.board {
-  width: 480px;
-  max-width: 480px;
-  height: 480px;
-  max-height: 480px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows:  1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  margin: 25px;
-  border: 2px solid #808080;
-}
-.cell {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  box-sizing: border-box;
-  padding: 2px;
-}
-.cell:hover, .cell:focus {
-  border: 2px solid #151516;
-  box-sizing: border-box;
-}
-.cellWhite {
-  background-color: ivory;
-}
-.cellBlack {
-  background-color: grey;
-}
-.checker {
-  display: block;
-  border-radius: 50%;
-  height: 28px;
-  width: 28px;
-  border: none;
-}
-.checkerWhite {
-  background-color: #F8F9FB;
-}
-.checkerBlack {
-  background-color: #151516;
-}
 .margin {
   display: flex;
   position: absolute;
@@ -89,16 +37,4 @@ button {
   height: 21px;
   padding: 2px 27px;
   margin-top: -25px;
-}
-.checkerSize {
-  width: 50px;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

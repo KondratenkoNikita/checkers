@@ -88,19 +88,26 @@ function App() {
 
   return (
     <div className="wrapper">
-      <div className="rowTest">
-        {[1,2,3,4,5,6,7,8].map((item) => <div>{item}</div>)}
+      <div className="margin marginRowTop">
+        {['g','h','f','e','d','c','b','a'].map((item) => <span>{item.toUpperCase()}</span>)}
       </div>
-      <div className="checkers">
+      <div className="margin marginColumnLeft">
+        {[8,7,6,5,4,3,2,1].map((item) => <span>{item}</span>)}
+      </div>
+      <div className="board">
         <Board
           board={board}
           setBoard={setBoard}
         />
       </div>
-      <div className="columnTest">
-        {[1,2,3,4,5,6,7,8].map((item) => <div>{item}</div>)}
+      <div className="margin marginRowBottom">
+        {['a','b','c','d','e','f','h','g'].map((item) => <span>{item.toUpperCase()}</span>)}
       </div>
-      <button onClick={start}>Start</button>
+      <div className="margin marginColumnRight">
+        {[1,2,3,4,5,6,7,8].map((item) => <span>{item}</span>)}
+      </div>
+      {/*<button onClick={start}>Start</button>*/}
+
     </div>
   );
 };

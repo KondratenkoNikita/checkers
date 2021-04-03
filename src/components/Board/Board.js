@@ -6,28 +6,36 @@ export const ACTIVE_CELL_INIT = {
   fromId: null,
   fromRow: null,
   fromColumn: null,
-  fromColor: null,
+  fromCheckerColor: null,
+  fromIsKing: false,
   toId: null,
-  isKing: false,
-  checkerColor: null,
 };
 
 function Board({board, setBoard}) {
-  const [activeCellId, setActiveCellId] = useState(ACTIVE_CELL_INIT);
+  const [activeCell, setActiveCell] = useState(ACTIVE_CELL_INIT);
+  const {
+    fromId,
+    fromRow,
+    fromColumn,
+    fromCheckerColor,
+    fromIsKing,
+    toId,
+  } = activeCell;
 
   const eatChecker = (rowEat, columnEat, toId, isKing) => {
+    console.log(activeCell, 'activeCell')
     let updatedBoard = [];
-    const cellEat = board.find(({row, column}) => row === rowEat && column === columnEat);
-    const isValidEat = activeCellId.checkerColor !== cellEat.checkerColor && cellEat.checkerColor !== null;
-    if (isValidEat) {
+    const eatenChecker = board.find(({row, column}) => row === rowEat && column === columnEat);
+    const isValidToEat = fromCheckerColor !== eatenChecker.checkerColor && eatenChecker.checkerColor !== null;
+    if (isValidToEat) {
       updatedBoard = [ ...board.map(cell => {
-        if (cell.id === cellEat.id) {
+        if (cell.id === eatenChecker.id) {
           return { ...cell, checkerColor: null, isKing: null };
         }
         if (cell.id === toId) {
-          return { ...cell, checkerColor: activeCellId.fromColor, isKing };
+          return { ...cell, checkerColor: fromCheckerColor, isKing };
         }
-        if (cell.id === activeCellId.fromId) {
+        if (cell.id === activeCell.fromId) {
           return { ...cell, checkerColor: null, isKing: null };
         }
         return cell
@@ -38,11 +46,11 @@ function Board({board, setBoard}) {
 
   const updateBoard = () => {
     const updatedBoard = [ ...board.map(cell => {
-      if (cell.id === activeCellId.fromId) {
+      if (cell.id === fromId) {
        return { ...cell, checkerColor: null, isKing: null };
       }
-      if (cell.id === activeCellId.toId) {
-        return { ...cell, checkerColor: activeCellId.checkerColor, isKing: activeCellId.isKing };
+      if (cell.id === toId) {
+        return { ...cell, checkerColor: fromCheckerColor, isKing: fromIsKing };
       }
       return cell
     })];
@@ -50,111 +58,108 @@ function Board({board, setBoard}) {
   };
 
   useEffect(() => {
-    if (activeCellId.toId !== null) updateBoard();
-  }, [activeCellId]);
+    if (toId !== null) updateBoard();
+  }, [activeCell]);
 
   useEffect(() => {
-    setActiveCellId(ACTIVE_CELL_INIT);
+    setActiveCell(ACTIVE_CELL_INIT);
   }, [board]);
 
-  const handlerStep = (id, checkerColor, cellColor, row, column, isKing) => {
-    const correctRow = activeCellId.checkerColor === 'white'
-      ? row === activeCellId.fromRow + 1
-      : row === activeCellId.fromRow - 1;
+  const handlerStep = (currentCellId, currentCheckerColor, currentCellColor, currentRow, currentColumn, currentIsKing) => {
+    const correctRow = fromCheckerColor === 'white'
+      ? currentRow === fromRow + 1
+      : currentRow === fromRow - 1;
 
-    const checkColumn = activeCellId.fromColumn + 1 || column === activeCellId.fromColumn - 1;
+    const checkColumn = fromColumn + 1 || currentColumn === fromColumn - 1;
 
-    const isValidFrom = checkerColor !== null && cellColor === 'black' && activeCellId.fromId === null;
+    const isValidFrom = currentCheckerColor !== null && currentCellColor === 'black' && fromId === null;
 
-    const isValidToStep = !isKing && cellColor === 'black' && checkerColor === null && correctRow && checkColumn;
+    const isValidToStep = !currentIsKing && currentCellColor === 'black' && currentCheckerColor === null && correctRow && checkColumn;
     let checkStepKing = null;
     let jumpedCheckers = {quantity: 0, id: 0, row: 0, column: 0};
     const arrCoordinates = [];
 
-    if (activeCellId.isKing) {
-      const checkColumnToKing = column - activeCellId.fromColumn;
-      const checkRowToKing = row - activeCellId.fromRow;
-      if (activeCellId.isKing) {
-        let startColumn = column < activeCellId.fromColumn ? column : activeCellId.fromColumn;
-        let endColumn = column > activeCellId.fromColumn ? column : activeCellId.fromColumn;
-        let startRow = row < activeCellId.fromRow ? row : activeCellId.fromRow;
-        let endRow = row > activeCellId.fromRow ? row : activeCellId.fromRow;
-        let rowRevers = row < activeCellId.fromRow ? activeCellId.fromRow : row;
-        let columnRevers = column < activeCellId.fromColumn ? activeCellId.fromColumn : column;
-        let index = 0;
+    if (fromIsKing) {
+      const checkColumnToKing = currentColumn - fromColumn;
+      const checkRowToKing = currentRow - fromRow;
+      let startColumn = currentColumn < fromColumn ? currentColumn : fromColumn;
+      let endColumn = currentColumn > fromColumn ? currentColumn : fromColumn;
+      let startRow = currentRow < fromRow ? currentRow : fromRow;
+      let endRow = currentRow > fromRow ? currentRow : fromRow;
+      let rowRevers = currentRow < fromRow ? fromRow : currentRow;
+      let columnRevers = currentColumn < fromColumn ? fromColumn : currentColumn;
+      let index = 0;
 
-        for (let i = startRow + 1; i <= endRow - 1; i++ ) {
-          const x = activeCellId.fromColumn < column ? rowRevers -= 1 : i;
-          arrCoordinates.push({x});
-        }
-        for (let i = startColumn + 1; i <= endColumn - 1; i++ ) {
-          const y = activeCellId.fromRow < row ? columnRevers -= 1 : i;
-          arrCoordinates[index].y = y;
-          index++;
-        }
-        board.map(cell => {
-          arrCoordinates.forEach(({ x, y }) => {
-            if (cell.row === x && cell.column === y ) {
-              if (cell.checkerColor !== null) {
-                jumpedCheckers.quantity += 1;
-                jumpedCheckers.row = cell.row;
-                jumpedCheckers.column = cell.column;
-                jumpedCheckers.id = cell.id;
-              };
-              if (cell.checkerColor === activeCellId.checkerColor) jumpedCheckers.quantity += 100;
-            }
-          })
-        });
+      for (let i = startRow + 1; i <= endRow - 1; i++ ) {
+        const x = fromColumn < currentColumn ? rowRevers -= 1 : i;
+        arrCoordinates.push({x});
       }
-      if (jumpedCheckers.quantity === 1) eatChecker(jumpedCheckers.row, jumpedCheckers.column, id, true);
+      for (let i = startColumn + 1; i <= endColumn - 1; i++ ) {
+        const y = fromRow < currentRow ? columnRevers -= 1 : i;
+        arrCoordinates[index].y = y;
+        index++;
+      }
+      board.map(cell => {
+        arrCoordinates.forEach(({ x, y }) => {
+          if (cell.row === x && cell.column === y ) {
+            if (cell.checkerColor !== null) {
+              jumpedCheckers.quantity += 1;
+              jumpedCheckers.row = cell.row;
+              jumpedCheckers.column = cell.column;
+              jumpedCheckers.id = cell.id;
+            };
+            if (cell.checkerColor === fromCheckerColor) jumpedCheckers.quantity += 100;
+          }
+        })
+      });
+
+      if (jumpedCheckers.quantity === 1) eatChecker(jumpedCheckers.row, jumpedCheckers.column, currentCellId, true);
       checkStepKing = (Math.abs(checkColumnToKing) === Math.abs(checkRowToKing)) && (jumpedCheckers.quantity < 2);
     }
 
-    const isValidFromStepKing = isKing && cellColor === 'black';
-    const isValidToStepKing = activeCellId.isKing && cellColor === 'black' && checkStepKing && checkerColor === null;
-    const isValidToEat = !isKing &&
-      (row === activeCellId.fromRow + 2 || row === activeCellId.fromRow - 2) &&
-      (column === activeCellId.fromColumn + 2 || column === activeCellId.fromColumn - 2);
+    const isValidFromStepKing = currentIsKing && currentCellColor === 'black';
+    const isValidToStepKing = fromIsKing && currentCellColor === 'black' && checkStepKing && currentCheckerColor === null;
+    const isValidToEat = !currentIsKing &&
+      (currentRow === fromRow + 2 || currentRow === fromRow - 2) &&
+      (currentColumn === fromColumn + 2 || currentColumn === fromColumn - 2);
 
-    const checkForTransferToKing = activeCellId.checkerColor === 'white'
-      ? !isKing && [63, 61, 59, 57].some(item => item === id)
-      : !isKing && [2, 4, 6, 8].some(item => item === id);
+    const checkForTransferToKing = fromCheckerColor === 'white'
+      ? !currentIsKing && [63, 61, 59, 57].some(item => item === currentCellId)
+      : !currentIsKing && [2, 4, 6, 8].some(item => item === currentCellId);
 
     if (isValidFromStepKing) {
-      setActiveCellId({
-        ...activeCellId,
-        fromId: id,
-        fromRow: row,
-        fromColumn: column,
-        fromColor: checkerColor,
-        isKing,
-        checkerColor,
+      setActiveCell({
+        ...activeCell,
+        fromId: currentCellId,
+        fromRow: currentRow,
+        fromColumn: currentColumn,
+        fromCheckerColor: currentCheckerColor,
+        fromIsKing: currentIsKing,
       });
     } else if (isValidToStepKing) {
-      setActiveCellId({ ...activeCellId, toId: id, isKing: activeCellId.isKing});
+      setActiveCell({ ...activeCell, toId: currentCellId});
     } else if (isValidFrom) { //if valid, then set info about checkerColor which a make move
-      setActiveCellId({
-        ...activeCellId,
-        fromId: id,
-        fromRow: row,
-        fromColumn: column,
-        fromColor: checkerColor,
-        isKing,
-        checkerColor,
+      setActiveCell({
+        ...activeCell,
+        fromId: currentCellId,
+        fromRow: currentRow,
+        fromColumn: currentColumn,
+        fromCheckerColor: currentCheckerColor,
+        fromIsKing: currentIsKing,
       });
     } else if (isValidToStep) { //is valid, then get info and set about cell where do I want put checkerColor
-        setActiveCellId({ ...activeCellId, toId: id, isKing: checkForTransferToKing});
+        setActiveCell({ ...activeCell, toId: currentCellId, fromIsKing: checkForTransferToKing});
     } else if (isValidToEat) { //is valid, then set checker across cell by diagonal
         const coordinateToEat = { row: null, column: null };
-        const setCoordinateColumnToEat = activeCellId.fromColumn < column
-          ? coordinateToEat.column = activeCellId.fromColumn + 1
-          : coordinateToEat.column = activeCellId.fromColumn - 1;
-        const setCoordinateRowToEat = activeCellId.fromRow < row
-          ? coordinateToEat.row = activeCellId.fromRow + 1
-          : coordinateToEat.row = activeCellId.fromRow - 1;
-        eatChecker(setCoordinateRowToEat, setCoordinateColumnToEat, id, checkForTransferToKing);
-    } else if (activeCellId.fromId !== null && activeCellId.toId === null) {
-        setActiveCellId(ACTIVE_CELL_INIT);
+        const setCoordinateColumnToEat = activeCell.fromColumn < currentColumn
+          ? coordinateToEat.column = activeCell.fromColumn + 1
+          : coordinateToEat.column = activeCell.fromColumn - 1;
+        const setCoordinateRowToEat = activeCell.fromRow < currentRow
+          ? coordinateToEat.row = activeCell.fromRow + 1
+          : coordinateToEat.row = activeCell.fromRow - 1;
+        eatChecker(setCoordinateRowToEat, setCoordinateColumnToEat, currentCellId, checkForTransferToKing);
+    } else if (activeCell.fromId !== null && activeCell.toId === null) {
+        setActiveCell(ACTIVE_CELL_INIT);
     }
   };
 

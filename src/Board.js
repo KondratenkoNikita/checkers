@@ -66,20 +66,54 @@ function Board({board, setBoard}) {
 
     const isValidFrom = checkerColor !== null && cellColor === 'black' && activeCellId.fromId === null;
 
-    const isValidToStep = cellColor === 'black' && checkerColor === null && correctRow && checkColumn;
-
+    const isValidToStep = !isKing && cellColor === 'black' && checkerColor === null && correctRow && checkColumn;
     let checkStepKing = null;
+    let jumpedCheckers = {quantity: 0, id: 0, row: 0, column: 0};
+    const arrCoordinates = [];
 
     if (activeCellId.isKing) {
       const checkColumnToKing = column - activeCellId.fromColumn;
       const checkRowToKing = row - activeCellId.fromRow;
-      checkStepKing = Math.abs(checkColumnToKing) === Math.abs(checkRowToKing);
+      if (activeCellId.isKing) {
+        let startColumn = column < activeCellId.fromColumn ? column : activeCellId.fromColumn;
+        let endColumn = column > activeCellId.fromColumn ? column : activeCellId.fromColumn;
+        let startRow = row < activeCellId.fromRow ? row : activeCellId.fromRow;
+        let endRow = row > activeCellId.fromRow ? row : activeCellId.fromRow;
+        let rowRevers = row < activeCellId.fromRow ? activeCellId.fromRow : row;
+        let columnRevers = column < activeCellId.fromColumn ? activeCellId.fromColumn : column;
+        let index = 0;
+
+        for (let i = startRow + 1; i <= endRow - 1; i++ ) {
+          const x = activeCellId.fromColumn < column ? rowRevers -= 1 : i;
+          arrCoordinates.push({x});
+        }
+        for (let i = startColumn + 1; i <= endColumn - 1; i++ ) {
+          const y = activeCellId.fromRow < row ? columnRevers -= 1 : i;
+          arrCoordinates[index].y = y;
+          index++;
+        }
+        board.map(cell => {
+          arrCoordinates.forEach(({ x, y }) => {
+            if (cell.row === x && cell.column === y ) {
+              if (cell.checkerColor !== null) {
+                jumpedCheckers.quantity += 1;
+                jumpedCheckers.row = cell.row;
+                jumpedCheckers.column = cell.column;
+                jumpedCheckers.id = cell.id;
+              };
+              if (cell.checkerColor === activeCellId.checkerColor) jumpedCheckers.quantity += 100;
+            }
+          })
+        });
+      }
+      if (jumpedCheckers.quantity === 1) eatChecker(jumpedCheckers.row, jumpedCheckers.column, id, true);
+      checkStepKing = (Math.abs(checkColumnToKing) === Math.abs(checkRowToKing)) && (jumpedCheckers.quantity < 2);
     }
 
     const isValidFromStepKing = isKing && cellColor === 'black';
-    const isValidToStepKing = activeCellId.isKing && cellColor === 'black' && checkStepKing;
-
-    const isValidToEat = (row === activeCellId.fromRow + 2 || row === activeCellId.fromRow - 2) &&
+    const isValidToStepKing = activeCellId.isKing && cellColor === 'black' && checkStepKing && checkerColor === null;
+    const isValidToEat = !isKing &&
+      (row === activeCellId.fromRow + 2 || row === activeCellId.fromRow - 2) &&
       (column === activeCellId.fromColumn + 2 || column === activeCellId.fromColumn - 2);
 
     const checkForTransferToKing = activeCellId.checkerColor === 'white'

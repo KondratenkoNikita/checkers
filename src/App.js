@@ -58,7 +58,7 @@ const BOARD_INIT = [
   { cellColor: 'white', row: 7, column: 5, checkerColor: null, isKing: false, id: 53 },
   { cellColor: 'black', row: 7, column: 6, checkerColor: null, isKing: false, id: 54 },
   { cellColor: 'white', row: 7, column: 7, checkerColor: null, isKing: false, id: 55 },
-  { cellColor: 'black', row: 8, column: 8, checkerColor: null, isKing: false, id: 56 },
+  { cellColor: 'black', row: 7, column: 8, checkerColor: null, isKing: false, id: 56 },
   { cellColor: 'black', row: 8, column: 1, checkerColor: null, isKing: false, id: 57 },
   { cellColor: 'white', row: 8, column: 2, checkerColor: null, isKing: false, id: 58 },
   { cellColor: 'black', row: 8, column: 3, checkerColor: null, isKing: false, id: 59 },

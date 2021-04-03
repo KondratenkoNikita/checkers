@@ -70,6 +70,11 @@ button {
   height: 320px;
   justify-content: space-around;
 }
+.king {
+  width: 20px;
+  height: 20px;
+  border: 4px solid darkkhaki;
+}
 
 @keyframes App-logo-spin {
   from {

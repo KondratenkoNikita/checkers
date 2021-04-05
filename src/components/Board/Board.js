@@ -70,14 +70,14 @@ function Board({board, setBoard}) {
       ? currentRow === fromRow + 1
       : currentRow === fromRow - 1;
 
-    const checkColumn = fromColumn + 1 || currentColumn === fromColumn - 1;
+    const checkColumn = currentColumn === fromColumn + 1 || currentColumn === fromColumn - 1;
 
     const isValidFrom = currentCheckerColor !== null && currentCellColor === 'black' && fromId === null;
 
     const isValidToStep = !currentIsKing && currentCellColor === 'black' && currentCheckerColor === null && correctRow && checkColumn;
     let checkStepKing = null;
     let jumpedCheckers = {quantity: 0, id: 0, row: 0, column: 0};
-    const arrCoordinates = [];
+    const jumpedCheckersCoordinates = [];
 
     if (fromIsKing) {
       const checkColumnToKing = currentColumn - fromColumn;
@@ -92,15 +92,15 @@ function Board({board, setBoard}) {
 
       for (let i = startRow + 1; i <= endRow - 1; i++ ) {
         const x = fromColumn < currentColumn ? rowRevers -= 1 : i;
-        arrCoordinates.push({x});
+        jumpedCheckersCoordinates.push({x});
       }
       for (let i = startColumn + 1; i <= endColumn - 1; i++ ) {
         const y = fromRow < currentRow ? columnRevers -= 1 : i;
-        arrCoordinates[index].y = y;
+        if (jumpedCheckersCoordinates.length) jumpedCheckersCoordinates[index].y = y;
         index++;
       }
       board.map(cell => {
-        arrCoordinates.forEach(({ x, y }) => {
+        jumpedCheckersCoordinates.forEach(({ x, y }) => {
           if (cell.row === x && cell.column === y ) {
             if (cell.checkerColor !== null) {
               jumpedCheckers.quantity += 1;

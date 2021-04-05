@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Board from './Board';
+import Board from './components/Board/Board';
 import './App.css';
 
 const BOARD_INIT = [
@@ -70,6 +70,8 @@ const BOARD_INIT = [
 ];
 const CHECKERS_WHITE = [2,4,6,8,9,11,13,15,18,20,22,24];
 const CHECKERS_BLACK = [63,61,59,57,56,54,52,50,47,45,43,41];
+const HORIZONTAL_NUMBERING = ['a','b','c','d','e','f','h','g'];
+const VERTICAL_NUMBERING = [1,2,3,4,5,6,7,8];
 const START_BOARD = [...BOARD_INIT.map((cell) => {
   if (CHECKERS_WHITE.find(checker => checker === cell.id)) {
     cell.checkerColor = 'white';
@@ -88,19 +90,25 @@ function App() {
 
   return (
     <div className="wrapper">
-      <div className="rowTest">
-        {[1,2,3,4,5,6,7,8].map((item) => <div>{item}</div>)}
+      <div className="margin marginRowTop">
+        {HORIZONTAL_NUMBERING.reverse().map((item) => <span>{item.toUpperCase()}</span>)}
       </div>
-      <div className="checkers">
+      <div className="margin marginColumnLeft">
+        {VERTICAL_NUMBERING.reverse().map((item) => <span>{item}</span>)}
+      </div>
+      <div className="board">
         <Board
           board={board}
           setBoard={setBoard}
         />
       </div>
-      <div className="columnTest">
-        {[1,2,3,4,5,6,7,8].map((item) => <div>{item}</div>)}
+      <div className="margin marginRowBottom">
+        {HORIZONTAL_NUMBERING.map((item) => <span>{item.toUpperCase()}</span>)}
       </div>
-      <button onClick={start}>Start</button>
+      <div className="margin marginColumnRight">
+        {VERTICAL_NUMBERING.map((item) => <span>{item}</span>)}
+      </div>
+      {/*<button onClick={start}>Reset</button>*/}
     </div>
   );
 };
